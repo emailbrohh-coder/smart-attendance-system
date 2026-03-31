@@ -1,0 +1,11 @@
+{
+  "periods": [
+    {"number": 1, "name": "Period 1", "start": "07:00", "end": "10:50"},
+    {"number": 2, "name": "Period 2", "start": "10:50", "end": "11:40"},
+    {"number": 3, "name": "Period 3", "start": "11:40", "end": "12:30"},
+    {"number": 4, "name": "Period 4", "start": "12:30", "end": "13:20"},
+    {"number": 5, "name": "Period 5", "start": "13:50", "end": "14:40"},
+    {"number": 6, "name": "Period 6", "start": "14:40", "end": "15:30"},
+    {"number": 7, "name": "Period 7", "start": "15:30", "end": "16:20"}
+  ]
+}

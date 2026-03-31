@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing - Smart Attendance System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(20px);
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.6s ease-out;
+            text-align: center;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        h1 {
+            color: #60a5fa;
+            font-size: 28px;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+        }
+
+        .status-text {
+            color: #cbd5e1;
+            font-size: 16px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .steps {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            font-size: 12px;
+            color: #3b82f6;
+        }
+
+        .step.completed .step-icon {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .step.active .step-icon {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { background: rgba(59, 130, 246, 0.2); }
+            50% { background: rgba(59, 130, 246, 0.4); }
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .btn-group {
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            display: none;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn.error-btn {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            border-color: rgba(220, 38, 38, 0.3);
+        }
+
+        .btn.error-btn:hover {
+            box-shadow: 0 10px 20px rgba(220, 38, 38, 0.3);
+        }
+
+        .error-message {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 4px solid #dc2626;
+            padding: 15px;
+            border-radius: 8px;
+            color: #fca5a5;
+            font-size: 14px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .spinner {
+                width: 60px;
+                height: 60px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner" id="spinner"></div>
+        <h1>📸 Registering Student</h1>
+        <p class="status-text" id="statusText">
+            Please wait while your face is being captured and the model is being trained...
+        </p>
+
+        <div class="steps">
+            <div class="step active" id="step1">
+                <div class="step-icon">1</div>
+                <div class="step-text">Capturing face samples from camera</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-icon">2</div>
+                <div class="step-text">Training face recognition model</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-icon">3</div>
+                <div class="step-text">Registration complete</div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="btn-group">
+            <a href="{{ url_for('menu') }}" class="btn" id="successBtn">🏠 Back to Menu</a>
+            <a href="{{ url_for('register_student') }}" class="btn" id="retryBtn">🔄 Try Again</a>
+        </div>
+    </div>
+
+    <script>
+        const checkInterval = 1000; // Check every 1 second
+        const maxWaitTime = 600000; // 10 minutes max wait
+        let startTime = Date.now();
+
+        function checkStatus() {
+            fetch('{{ url_for("check_registration_status") }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'processing') {
+                        // Still processing
+                        if (Date.now() - startTime > maxWaitTime) {
+                            showError('Registration timeout. Please try again.');
+                        } else {
+                            setTimeout(checkStatus, checkInterval);
+                        }
+                    } else if (data.status === 'completed') {
+                        // Registration completed successfully
+                        showSuccess();
+                    } else if (data.status === 'error') {
+                        // Error occurred
+                        showError(data.message || 'Unknown error occurred');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking status:', error);
+                    setTimeout(checkStatus, checkInterval);
+                });
+        }
+
+        function showSuccess() {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('statusText').textContent = '✅ Registration completed successfully!';
+            document.getElementById('statusText').style.color = '#10b981';
+            
+            // Update steps
+            document.getElementById('step1').classList.remove('active');
+            document.getElementById('step1').classList.add('completed');
+            document.getElementById('step1').querySelector('.step-icon').textContent = '✓';
+            
+            document.getElementById('step2').classList.remove('active');
+            document.getElementById('step2').classList.add('completed');
+            document.getElementById('step2').querySelector('.step-icon').textContent = '✓';
+            
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step3').classList.add('completed');
+            document.getElementById('step3').querySelector('.step-icon').textContent = '✓';
+            
+            document.getElementById('successBtn').style.display = 'block';
+            document.getElementById('h1').textContent = '✅ Registration Complete!';
+        }
+
+        function showError(message) {
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('statusText').innerHTML = '❌ <strong>Registration Failed!</strong><br>' + message;
+            document.getElementById('statusText').style.color = '#fca5a5';
+            
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorMessage').style.display = 'block';
+            
+            document.getElementById('retryBtn').style.display = 'block';
+            document.getElementById('h1').textContent = '❌ Registration Failed';
+        }
+
+        // Start checking status
+        checkStatus();
+    </script>
+</body>
+</html>

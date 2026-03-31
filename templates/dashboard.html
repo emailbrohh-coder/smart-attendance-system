@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Attendance Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Main Container with Epic Entrance */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: epicEntrance 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        @keyframes epicEntrance {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) rotateX(90deg);
+                filter: blur(20px);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1) rotateX(45deg);
+                filter: blur(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotateX(0deg);
+                filter: blur(0px);
+            }
+        }
+
+        /* Futuristic Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, 
+                rgba(0, 255, 255, 0.1) 0%, 
+                rgba(255, 0, 255, 0.1) 50%, 
+                rgba(255, 255, 0, 0.1) 100%);
+            backdrop-filter: blur(30px);
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+            animation: headerPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes headerPulse {
+            0%, 100% {
+                box-shadow: 
+                    0 0 30px rgba(0, 255, 255, 0.3),
+                    0 0 60px rgba(255, 0, 255, 0.2),
+                    inset 0 0 30px rgba(255, 255, 255, 0.1);
+            }
+            50% {
+                box-shadow: 
+                    0 0 50px rgba(0, 255, 255, 0.5),
+                    0 0 100px rgba(255, 0, 255, 0.4),
+                    inset 0 0 50px rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            background-size: 400% 400%;
+            border-radius: 32px;
+            z-index: -1;
+            animation: borderGlow 3s ease infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header h1 {
+            font-size: 42px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+            animation: titleGlitch 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlitch {
+            0%, 90%, 100% {
+                transform: translate(0);
+            }
+            92% {
+                transform: translate(-2px, 2px);
+            }
+            94% {
+                transform: translate(2px, -2px);
+            }
+            96% {
+                transform: translate(-2px, -2px);
+            }
+            98% {
+                transform: translate(2px, 2px);
+            }
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: badgeFloat 3s ease-in-out infinite;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes badgeFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn-group a {
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-group a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-group a:hover::before {
+            left: 100%;
+        }
+
+        .download {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+
+        .download:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(102, 126, 234, 0.6);
+        }
+
+        .menu {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 15px 35px rgba(240, 147, 251, 0.4);
+        }
+
+        .menu:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(240, 147, 251, 0.6);
+        }
+
+        .logout {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            box-shadow: 0 15px 35px rgba(250, 112, 154, 0.4);
+        }
+
+        .logout:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(250, 112, 154, 0.6);
+        }
+
+        /* Epic Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: cardSlideIn 1s ease-out both;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.2s; }
+        .card:nth-child(2) { animation-delay: 0.4s; }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(100px) rotateX(90deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, 
+                rgba(0, 255, 255, 0.1), 
+                rgba(255, 0, 255, 0.1), 
+                rgba(255, 255, 0, 0.1));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            border-radius: 25px;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card:hover {
+            transform: translateY(-20px) scale(1.05);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.3),
+                0 0 50px rgba(0, 255, 255, 0.3);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            color: #a0a0a0;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .card p {
+            font-size: 48px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: numberPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes numberPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Futuristic Table Container */
+        .table-container {
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(20, 20, 40, 0.9) 100%);
+            backdrop-filter: blur(30px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            position: relative;
+            overflow: hidden;
+            animation: tableRise 1.5s ease-out 0.8s both;
+        }
+
+        @keyframes tableRise {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+            background-size: 400% 400%;
+            border-radius: 32px;
+            z-index: -1;
+            animation: borderFlow 4s ease infinite;
+        }
+
+        @keyframes borderFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Epic Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        thead::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            animation: headerSweep 3s ease-in-out infinite;
+        }
+
+        @keyframes headerSweep {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+
+        th {
+            padding: 25px 20px;
+            text-align: left;
+            font-weight: 800;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        td {
+            padding: 20px;
+            font-size: 16px;
+            font-weight: 500;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: rowSlideIn 0.6s ease-out both;
+            position: relative;
+        }
+
+        tbody tr:nth-child(odd) { animation-delay: 0.1s; }
+        tbody tr:nth-child(even) { animation-delay: 0.2s; }
+
+        @keyframes rowSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, 
+                rgba(0, 255, 255, 0.1), 
+                rgba(255, 0, 255, 0.1));
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+        }
+
+        tbody tr:hover td {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        /* Filter Section */
+        .filter-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-section input,
+        .filter-section select {
+            padding: 15px 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(0, 255, 255, 0.3);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-section input:focus,
+        .filter-section select:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        .filter-section button {
+            padding: 15px 30px;
+            border-radius: 15px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .filter-section button:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .table-container {
+                padding: 20px;
+                overflow-x: auto;
+            }
+
+            th, td {
+                padding: 15px 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Epic Animated Background -->
+    <div class="cyber-bg"></div>
+    
+    <!-- Matrix Rain Effect -->
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <!-- Floating Geometric Shapes -->
+    <div class="geometric-shapes" id="geometricShapes"></div>
+
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-robot"></i> Smart Attendance Dashboard</h1>
+                <div class="badge"><i class="fas fa-graduation-cap"></i> Govt Poly Pillaripattu</div>
+            </div>
+
+            <div class="btn-group">
+                <a href="{{ url_for('menu') }}" class="menu"><i class="fas fa-home"></i> Back to Menu</a>
+                <a href="{{ url_for('download') }}" class="download"><i class="fas fa-download"></i> Download CSV</a>
+                <a href="{{ url_for('logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+
+        <!-- Epic Stats Cards -->
+        <div class="stats">
+            <div class="card">
+                <h3><i class="fas fa-chart-bar"></i> Total Records</h3>
+                <p id="totalRecords">{{ total }}</p>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-calendar-alt"></i> Selected Date</h3>
+                <p>{{ selected_date if selected_date else "All" }}</p>
+            </div>
+        </div>
+
+        <!-- Futuristic Table -->
+        <div class="table-container">
+            <div class="filter-section">
+                <form method="GET">
+                    <input type="date" name="date" value="{{ selected_date }}" placeholder="Select Date">
+                    <select name="period">
+                        <option value="-">All Periods</option>
+                        {% for p in periods %}
+                        <option value="{{ p.number }}" {% if selected_period == p.number|string %}selected{% endif %}>Period {{ p.number }} ({{ p.start }}-{{ p.end }})</option>
+                        {% endfor %}
+                    </select>
+                    <select name="pin">
+                        <option value="">All PINs</option>
+                        {% for pin in unique_pins %}
+                        <option value="{{ pin }}" {% if selected_pin == pin %}selected{% endif %}>{{ pin }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit"><i class="fas fa-search"></i> Apply</button>
+                    <a href="{{ url_for('dashboard') }}">
+                        <button type="button"><i class="fas fa-refresh"></i> Clear</button>
+                    </a>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-hashtag"></i> ID</th>
+                        <th><i class="fas fa-id-card"></i> PIN</th>
+                        <th><i class="fas fa-calendar"></i> Date</th>
+                        <th><i class="fas fa-clock"></i> Period</th>
+                        <th><i class="fas fa-stopwatch"></i> Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in records %}
+                    <tr>
+                        <td>{{ r.ID }}</td>
+                        <td>{{ r.PIN }}</td>
+                        <td>{{ r.Date }}</td>
+                        <td>P{{ r.Period }}</td>
+                        <td>{{ r.Time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Matrix Rain Effect
+        function createMatrixRain() {
+            const matrixContainer = document.getElementById('matrixRain');
+            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = Math.random() * 100 + '%';
+                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                column.style.animationDelay = Math.random() * 2 + 's';
+                
+                let text = '';
+                for (let j = 0; j < 20; j++) {
+                    text += characters.charAt(Math.floor(Math.random() * characters.length)) + '<br>';
+                }
+                column.innerHTML = text;
+                
+                matrixContainer.appendChild(column);
+            }
+        }
+
+        // Floating Geometric Shapes
+        function createGeometricShapes() {
+            const shapesContainer = document.getElementById('geometricShapes');
+            const shapeTypes = ['circle', 'square', 'triangle'];
+            
+            for (let i = 0; i < 15; i++) {
+                const shape = document.createElement('div');
+                shape.className = `shape ${shapeTypes[Math.floor(Math.random() * shapeTypes.length)]}`;
+                shape.style.left = Math.random() * 100 + '%';
+                shape.style.top = Math.random() * 100 + '%';
+                shape.style.animationDelay = Math.random() * 5 + 's';
+                shape.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                
+                shapesContainer.appendChild(shape);
+            }
+        }
+
+        // Animate Numbers
+        function animateNumbers() {
+            const totalElement = document.getElementById('totalRecords');
+            if (totalElement) {
+                const finalValue = parseInt(totalElement.textContent);
+                let currentValue = 0;
+                const increment = finalValue / 100;
+                
+                const timer = setInterval(() => {
+                    currentValue += increment;
+                    if (currentValue >= finalValue) {
+                        currentValue = finalValue;
+                        clearInterval(timer);
+                    }
+                    totalElement.textContent = Math.floor(currentValue);
+                }, 20);
+            }
+        }
+
+        // Initialize Epic Effects
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            createGeometricShapes();
+            setTimeout(animateNumbers, 1000);
+            
+            // Add glitch effect to title on hover
+            const title = document.querySelector('.header h1');
+            title.addEventListener('mouseenter', function() {
+                this.style.animation = 'titleGlitch 0.3s ease-in-out';
+            });
+            
+            title.addEventListener('animationend', function() {
+                this.style.animation = 'titleGlitch 3s ease-in-out infinite';
+            });
+        });
+    </script>
+</body>
+</html>
+
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <div>
+        <h1>Smart Attendance Dashboard</h1>
+        <div class="badge">Govt Poly Pillaripattu</div>
+    </div>
+
+    <div class="btn-group">
+        <a href="{{ url_for('menu') }}" class="menu">Back to Menu</a>
+        <a href="{{ url_for('download') }}" class="download">Download CSV</a>
+        <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+</div>
+
+<!-- STAT CARDS -->
+<div class="stats">
+    <div class="card">
+        <h3>Total Records</h3>
+        <p>{{ total }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Selected Date</h3>
+        <p>{{ selected_date if selected_date else "All" }}</p>
+    </div>
+</div>
+
+<!-- TABLE -->
+<div class="table-container">
+
+    <div class="filter-section">
+        <form method="GET">
+            <input type="date" name="date" value="{{ selected_date }}" placeholder="Select Date">
+            <select name="period" style="padding: 8px; border-radius: 8px; border: none; margin-left: 10px;">
+                <option value="-">All Periods</option>
+                {% for p in periods %}
+                <option value="{{ p.number }}" {% if selected_period == p.number|string %}selected{% endif %}>Period {{ p.number }} ({{ p.start }}-{{ p.end }})</option>
+                {% endfor %}
+            </select>
+            <select name="pin" style="padding: 8px; border-radius: 8px; border: none; margin-left: 10px;">
+                <option value="">All PINs</option>
+                {% for pin in unique_pins %}
+                <option value="{{ pin }}" {% if selected_pin == pin %}selected{% endif %}>{{ pin }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Apply</button>
+            <a href="{{ url_for('dashboard') }}">
+                <button type="button">Clear</button>
+            </a>
+        </form>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>PIN</th>
+                <th>Date</th>
+                <th>Period</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r.ID }}</td>
+                <td>{{ r.PIN }}</td>
+                <td>{{ r.Date }}</td>
+                <td>P{{ r.Period }}</td>
+                <td>{{ r.Time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>
