@@ -6,6 +6,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "smart_attendance_secret_key")
+# v2 - filter fix
 
 ATT_FILE = "attendance.csv"
 
