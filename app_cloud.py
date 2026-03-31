@@ -25,26 +25,26 @@ def read_attendance(date_filter=None, period_filter=None, pin_filter=None):
 
     with open(ATT_FILE, "r", newline="") as f:
         reader = csv.DictReader(f)
-
         for row in reader:
             clean = {(k.strip().lower() if k else ""): (str(v).strip() if v else "") for k, v in row.items()}
             rec = {
-                "ID": clean.get("id", ""),
-                "PIN": clean.get("pin", ""),
-                "Date": clean.get("date", ""),
+                "ID":     clean.get("id", ""),
+                "PIN":    clean.get("pin", ""),
+                "Date":   clean.get("date", ""),
                 "Period": clean.get("period", "-"),
-                "Time": clean.get("time", "")
+                "Time":   clean.get("time", "")
             }
 
-            if date_filter and rec["Date"] != date_filter:
-                continue
-            
-            if period_filter and period_filter != "-":
-                if rec["Period"] != period_filter:
+            if date_filter:
+                if rec["Date"] != date_filter:
                     continue
 
-            if pin_filter and pin_filter != "":
-                if rec.get("PIN", "") != pin_filter:
+            if period_filter and period_filter not in ("", "-"):
+                if str(rec["Period"]).strip() != str(period_filter).strip():
+                    continue
+
+            if pin_filter:
+                if rec["PIN"] != pin_filter:
                     continue
 
             records.append(rec)
@@ -76,18 +76,20 @@ def dashboard():
     if not session.get("logged_in"):
         return redirect(url_for("login"))
 
-    date_filter = request.args.get("date", "").strip()
-    period_filter = request.args.get("period", "-").strip()
-    pin_filter = request.args.get("pin", "").strip()
-    
-    if date_filter == "":
-        date_filter = None
-    if pin_filter == "":
-        pin_filter = None
+    date_filter   = request.args.get("date",   "").strip() or None
+    period_filter = request.args.get("period", "").strip()
+    pin_filter    = request.args.get("pin",    "").strip() or None
 
-    records = read_attendance(date_filter=date_filter, period_filter=period_filter, pin_filter=pin_filter)
+    if period_filter in ("", "-"):
+        period_filter = None
+
+    records = read_attendance(
+        date_filter=date_filter,
+        period_filter=period_filter,
+        pin_filter=pin_filter
+    )
     today = datetime.now().strftime("%Y-%m-%d")
-    
+
     all_records = read_attendance()
     unique_pins = sorted(set(r["PIN"] for r in all_records if r["PIN"]))
 
@@ -95,7 +97,7 @@ def dashboard():
         "dashboard_cloud.html",
         records=records,
         selected_date=date_filter or "",
-        selected_period=period_filter,
+        selected_period=period_filter or "-",
         selected_pin=pin_filter or "",
         periods=PERIODS,
         unique_pins=unique_pins,
